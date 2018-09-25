@@ -36,6 +36,8 @@ public class ServerSocketFacadeImpl implements ServerSocketFacade
 {
     private ServerSocket serverSocket;
 
+    private Integer socketReadTimeout = null;
+
     public ServerSocketFacadeImpl(int port, int backlog, InetAddress bindAddress)
             throws IOException
     {
@@ -48,11 +50,16 @@ public class ServerSocketFacadeImpl implements ServerSocketFacade
 
         socket = serverSocket.accept();
 
-        return new SocketConnectionFacadeImpl(socket);
+        return new SocketConnectionFacadeImpl(socket, socketReadTimeout);
     }
 
     public void close() throws IOException
     {
         serverSocket.close();
+    }
+
+    public void setSocketReadTimeout(Integer socketReadTimeout)
+    {
+        this.socketReadTimeout = socketReadTimeout;
     }
 }

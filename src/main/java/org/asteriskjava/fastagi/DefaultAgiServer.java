@@ -63,6 +63,15 @@ public class DefaultAgiServer extends AbstractAgiServer implements AgiServer
     private InetAddress address = null;
 
     /**
+     * Closes the connection if no input has been read for the
+     * given amount of milliseconds. A timeout of zero is interpreted as an
+     * infinite timeout.
+     *
+     * @see Socket#setSoTimeout(int)
+     */
+    private Integer socketReadTimeout = null;
+
+    /**
      * Creates a new DefaultAgiServer.
      */
     public DefaultAgiServer()
@@ -295,9 +304,16 @@ public class DefaultAgiServer extends AbstractAgiServer implements AgiServer
         }
     }
 
+    public void setSocketReadTimeout(Integer socketReadTimeout)
+    {
+        this.socketReadTimeout = socketReadTimeout;
+    }
+
     protected ServerSocketFacade createServerSocket() throws IOException
     {
-        return new ServerSocketFacadeImpl(port, BACKLOG, address);
+        ServerSocketFacade serverSocketFacade = new ServerSocketFacadeImpl(port, BACKLOG, address);
+        serverSocketFacade.setSocketReadTimeout(socketReadTimeout);
+        return serverSocketFacade;
     }
 
     public void startup() throws IOException, IllegalStateException

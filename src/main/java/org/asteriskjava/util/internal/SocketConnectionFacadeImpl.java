@@ -155,7 +155,22 @@ public class SocketConnectionFacadeImpl implements SocketConnectionFacade
      */
     SocketConnectionFacadeImpl(Socket socket) throws IOException
     {
-        socket.setSoTimeout(MAX_SOCKET_READ_TIMEOUT_MILLIS);
+        this(socket, MAX_SOCKET_READ_TIMEOUT_MILLIS);
+    }
+
+    /**
+     * Creates a new instance for use with FastAGI that uses NL ("\n") as line delimiter.
+     *
+     * @param socket the underlying socket.
+     * @param timeout     0 incidcates infinite timeout
+     * @throws IOException if the connection cannot be initialized.
+     */
+    SocketConnectionFacadeImpl(Socket socket, Integer timeout) throws IOException {
+        if (timeout == null)
+        {
+            timeout = MAX_SOCKET_READ_TIMEOUT_MILLIS;
+        }
+        socket.setSoTimeout(timeout);
         initialize(socket, StandardCharsets.UTF_8, NL_PATTERN);
     }
 
